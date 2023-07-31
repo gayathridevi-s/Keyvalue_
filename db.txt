@@ -1,0 +1,88 @@
+/*user table*/
+create table "user" (
+"created_at" TIMESTAMP not null default now(),
+"updated_at" TIMESTAMP not null default now(),
+"deleted_at" TIMESTAMP,
+"id" uuid not null default uuid_generate_v4(),
+"name" character varying not null,
+"address" character varying not null,
+"phone_number" character varying,
+"email" character varying not null,
+"password" character varying not null,
+constraint "PK_3c2bc72f03fd5abbbc5ac169998" primary key ("id"));
+
+select * from "user";
+
+INSERT INTO "user"
+("name", address, phone_number,email,"password")
+values
+('Virat Kohli', 'Delhi' ,'8765432345','ViratKing@18','virat'),
+('Aravind krishna', 'gujarat','5678452312', 'arjun@19','aravind'),
+('Sachin Tendulkar', 'kerala', '8765432190','Legend@Master47','sachin');
+/*product table*/
+  create table "product" (
+"created_at" TIMESTAMP not null default now(),
+"updated_at" TIMESTAMP not null default now(),
+"deleted_at" TIMESTAMP,
+"sku" uuid not null default uuid_generate_v4(),
+"name" character varying not null,
+"description" character varying not null,
+"price" float ,
+"product_category" character varying not null,
+constraint "PK_3c2bc72f03fd5abbbc5ac539998" primary key ("sku"));
+
+
+insert into product 
+("name", description, price,"product_category")
+values
+('Samsung', 'mobile' ,'87600','Electronics'),
+('lux','soap','35','detergent'),
+('kurta', 'cloth', '800','dress'),
+('chocos','cornflakes','300','food'),
+('walkaroo','shoe','600','leather');
+
+select * from "product";
+
+create table "order" (
+"created_at" TIMESTAMP not null default now(),
+"updated_at" TIMESTAMP not null default now(),
+"deleted_at" TIMESTAMP,
+"ordered_user_id" uuid not null default uuid_generate_v4(),
+"order_address" character varying not null,
+constraint "PK_3c2bc72f03fdbbbc5ac539998" primary key ("ordered_user_id"));
+/*order table*/
+select * from order;
+
+INSERT INTO "order"
+("order_address")
+values
+('karnataka'),('haryana'),('jammu'),('goa'),('delhi');
+
+/*junction table*/
+
+create table "order_details"(
+"created_at" TIMESTAMP not null default now(),
+"updated_at" TIMESTAMP not null default now(),
+"deleted_at" TIMESTAMP,
+"order_id" uuid not null,
+"product_id" uuid not null,
+"count" character varying
+);
+select * from order_details ;
+
+
+
+INSERT INTO order_details (order_id, product_id, count)
+VALUES
+  ((SELECT ordered_user_id FROM "order" WHERE order_address = 'karnataka'), (SELECT sku FROM product WHERE name = 'Samsung'), 1),
+  ((SELECT ordered_user_id FROM "order" WHERE order_address = 'haryana'), (SELECT sku FROM product WHERE name = 'lux'), 2),
+  ((SELECT ordered_user_id FROM "order" WHERE order_address = 'jammu'), (SELECT sku FROM product WHERE name = 'kurta'), 3),
+  ((SELECT ordered_user_id FROM "order" WHERE order_address = 'goa'), (SELECT sku FROM product WHERE name = 'chocos'), 2),
+  ((SELECT ordered_user_id FROM "order" WHERE order_address = 'delhi'), (SELECT sku FROM product WHERE name = 'walkaroo'), 2);
+
+/*indexing*/
+
+CREATE INDEX idx_product_name ON "product" ("name");
+CREATE INDEX idx_product_category ON "product" ("product_category");
+
+
